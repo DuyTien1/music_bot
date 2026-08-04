@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Python/pip không khả dụng trên môi trường local Windows, bỏ qua bước cài yt-dlp.'"
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
