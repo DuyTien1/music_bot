@@ -1,5 +1,7 @@
 import { PlayerManager } from "ziplayer";
-import { YouTubePlugin, SpotifyPlugin, SoundCloudPlugin } from "@ziplayer/plugin";
+import { YouTubePlugin, SpotifyPlugin } from "@ziplayer/plugin";
+import { InfinityPlugin } from "@ziplayer/infinity";
+import playdl from "play-dl";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { logger } from "../utils/logger.js";
 import dotenv from "dotenv";
@@ -12,20 +14,45 @@ if (proxyUrl) {
 	logger("SEARCH", "⚡ Đã kích hoạt Residential Proxy để bypass Youtube IP Block!");
 }
 
-// Thiết lập Plugins với ưu tiên: Spotify -> YouTube -> SoundCloud
+// 1. Cấu hình Custom Stream Extractor dùng play-dl để bypass lỗi decipher của Youtube
+const playDlExtractor = async (track) => {
+	try {
+		// Nếu track có URL YouTube hoặc được resolve từ Spotify
+		const ytUrl = track.url || track.raw?.url;
+		if (ytUrl) {
+			const stream = await playdl.stream(ytUrl, {
+				proxy: proxyUrl,
+				quality: 2,
+			});
+			return {
+				stream: stream.stream,
+				type: stream.type,
+			};
+		}
+	} catch (err) {
+		logger("WARN", `play-dl stream error: ${err.message}`);
+	}
+	return null;
+};
+
+// 2. Cấu hình Plugins với ưu tiên
 const spotifyPlugin = new SpotifyPlugin({ fetchOptions: { agent } });
 spotifyPlugin.priority = 30;
 
-const youtubePlugin = new YouTubePlugin({ fetchOptions: { agent } });
+// Gắn play-dl làm fallback stream cho YouTubePlugin
+const youtubePlugin = new YouTubePlugin({
+	fetchOptions: { agent },
+	customStream: playDlExtractor,
+});
 youtubePlugin.priority = 20;
 
-const soundcloudPlugin = new SoundCloudPlugin();
-soundcloudPlugin.priority = 10;
+const infinityPlugin = new InfinityPlugin();
+infinityPlugin.priority = 10;
 
 export const musicManager = new PlayerManager({
-	plugins: [spotifyPlugin, youtubePlugin, soundcloudPlugin],
+	plugins: [spotifyPlugin, youtubePlugin, infinityPlugin],
 	autoCleanup: true,
-	extractorTimeout: 20000,
+	extractorTimeout: 25000,
 	enableSearchCache: true,
 });
 
@@ -36,7 +63,6 @@ musicManager.on("trackStart", (player, track) => {
 
 musicManager.on("playerError", async (player, error, track) => {
 	logger("ERROR", `🔥 Lỗi phát nhạc (${track?.title || "Unknown"}): ${error.message}`);
-	// Tự động retry hoặc hồi phục stream
 	try {
 		if (player.connection) {
 			logger("VOICE", "🔄 Đang tự khôi phục Voice connection & Stream...");
