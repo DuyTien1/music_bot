@@ -1,29 +1,30 @@
 {
-	"name": "music-bot",
-	"version": "1.0.0",
-	"type": "module",
-	"main": "src/index.js",
-	"scripts": {
-		"start": "node src/index.js",
-		"dev": "node --watch src/index.js"
-	},
-	"dependencies": {
-		"@discordjs/opus": "^0.9.0",
-		"@discordjs/voice": "^0.18.0",
-		"@ziplayer/infinity": "^0.0.3",
-		"@ziplayer/plugin": "^0.3.4",
-		"discord.js": "^14.18.0",
-		"dotenv": "^16.4.7",
-		"express": "^4.21.2",
-		"ffmpeg-static": "^5.2.0",
-		"https-proxy-agent": "^7.0.6",
-		"libsodium-wrappers": "^0.7.15",
-		"play-dl": "^1.9.7",
-		"spotify-url-info": "^3.2.12",
-		"youtubei.js": "^12.2.0",
-		"ziplayer": "^0.3.13"
-	},
-	"engines": {
-		"node": ">=22.0.0"
-	}
+  "name": "discord-music-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.17.0",
+    "@ziplayer/infinity": "^1.0.0",
+    "@ziplayer/plugin": "^1.0.0",
+    "@ziplayer/ytexecplug": "^1.0.0",
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ffmpeg-static": "^5.2.0",
+    "https-proxy-agent": "^7.0.4",
+    "libsodium-wrappers": "^0.7.13",
+    "opusscript": "^0.0.8",
+    "play-dl": "^1.9.7",
+    "spotify-url-info": "^3.2.10",
+    "youtubei.js": "^10.0.0",
+    "ziplayer": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
 }
