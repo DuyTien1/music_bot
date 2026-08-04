@@ -6,13 +6,13 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Skip yt-dlp pip install on non-linux OS'"
+    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Bỏ qua yt-dlp trên Windows/Local'"
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "@ziplayer/infinity": "^1.0.0",
-    "@ziplayer/plugin": "^1.0.0",
-    "@ziplayer/ytexecplug": "^1.0.0",
+    "@ziplayer/infinity": "latest",
+    "@ziplayer/plugin": "latest",
+    "@ziplayer/ytexecplug": "latest",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -23,7 +23,7 @@
     "play-dl": "^1.9.7",
     "yt-dlp-exec": "^3.0.0",
     "youtubei.js": "^10.0.0",
-    "ziplayer": "^1.0.0"
+    "ziplayer": "latest"
   },
   "engines": {
     "node": ">=22.0.0"
