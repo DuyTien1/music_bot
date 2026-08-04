@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Python/pip không khả dụng trên môi trường local Windows, bỏ qua bước cài yt-dlp.'"
+    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Skip yt-dlp pip install on non-linux OS'"
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
@@ -21,7 +21,7 @@
     "libsodium-wrappers": "^0.7.13",
     "opusscript": "^0.0.8",
     "play-dl": "^1.9.7",
-    "spotify-url-info": "^3.2.10",
+    "yt-dlp-exec": "^3.0.0",
     "youtubei.js": "^10.0.0",
     "ziplayer": "^1.0.0"
   },
