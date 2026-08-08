@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>niTe TYPING RACER</title>
+		<link rel="stylesheet" href="style.css" />
+		<!-- Cập nhật Google Fonts: Thêm Lexend cho trải nghiệm gõ chữ mượt mà -->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+		<!-- TIỆN ÍCH TRÊN CÙNG: ĐỔI TÊN, THÊM NÚT ĐỔI THEME & ONLINE BADGE -->
+		<div id="user-profile-bar" class="left-bar">
+			<span>👤 <span id="profile-name">Vô danh</span></span>
+			<button id="btn-change-name" class="btn-small">ĐỔI TÊN</button>
+			<!-- Nút chuyển đổi Theme Sáng/Tối -->
+			<button id="theme-toggle-btn" class="btn-small theme-btn" title="Đổi Chế Độ Sáng/Tối">
+				🌙 Tối
+			</button>
+		</div>
+
+		<div class="online-badge top-right-badge">
+			<div class="online-dot"></div>
+			<span id="online-count">0</span> Trực tuyến
+		</div>
+
+		<!-- MODAL TRANG CHỦ -->
+		<div id="login-modal" class="modal">
+			<div class="cyber-box modal-content" style="max-width: 550px">
+				<h1 class="glitch-title">niTe TYPING RACER</h1>
+				<p class="subtitle">Thử Thách Đánh Máy & NumPad</p>
+
+				<!-- KHU VỰC CHỌN NÚT CHẾ ĐỘ -->
+				<div class="input-group">
+					<label>CHỌN CHẾ ĐỘ THI ĐẤU</label>
+					<div class="mode-grid">
+						<div class="mode-card selected" data-lang="vi_dau">
+							<div class="icon">🇻🇳</div>
+							<div class="title">Tiếng Việt</div>
+						</div>
+						<div class="mode-card" data-lang="vi_nodau">
+							<div class="icon">🔤</div>
+							<div class="title">Không Dấu</div>
+						</div>
+						<div class="mode-card" data-lang="en">
+							<div class="icon">🔠</div>
+							<div class="title">English</div>
+						</div>
+						<div class="mode-card" data-lang="numpad">
+							<div class="icon">🔢</div>
+							<div class="title">Numpad</div>
+						</div>
+					</div>
+				</div>
+
+				<input type="hidden" id="username-input" />
+
+				<button id="join-btn" class="cyber-btn">VÀO PHÒNG CHỜ</button>
+
+				<!-- KHUNG CHAT TRANG CHỦ -->
+				<div class="global-chat-box">
+					<div class="chat-header-title">💬 KHUNG SỦA DƠ</div>
+					<div class="global-chat-messages"></div>
+					<div class="global-chat-input-wrapper">
+						<input
+							type="text"
+							class="global-chat-input"
+							placeholder="Nhập tin nhắn..."
+							maxlength="100"
+							autocomplete="off"
+						/>
+						<button class="global-chat-send-btn btn-small">GỬI</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- POPUP ĐỔI TÊN CUSTOM -->
+		<div id="rename-popup" class="custom-popup hidden">
+			<div class="popup-content">
+				<h3
+					style="
+						font-family: &quot;Orbitron&quot;, sans-serif;
+						color: var(--primary);
+						margin-bottom: 15px;
+					"
+				>
+					✏️ THAY ĐỔI BIỆT DANH
+				</h3>
+				<input
+					type="text"
+					id="popup-name-input"
+					placeholder="Tên mới..."
+					maxlength="15"
+					style="
+						width: 100%;
+						padding: 12px;
+						background: var(--input-bg);
+						border: 1px solid var(--primary);
+						color: var(--text-main);
+						border-radius: 6px;
+						font-family: &quot;Rajdhani&quot;, sans-serif;
+						font-size: 16px;
+						margin-bottom: 20px;
+						box-sizing: border-box;
+					"
+				/>
+				<div style="display: flex; gap: 10px; justify-content: center">
+					<button
+						id="btn-save-popup-name"
+						class="cyber-btn"
+						style="padding: 8px 20px; font-size: 14px"
+					>
+						LƯU TÊN
+					</button>
+					<button
+						id="btn-cancel-popup-name"
+						class="cyber-btn"
+						style="
+							padding: 8px 20px;
+							font-size: 14px;
+							background: linear-gradient(45deg, #444, #222);
+						"
+					>
+						HỦY
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- PHÒNG CHỜ -->
+		<div id="lobby-screen" class="screen hidden">
+			<div class="cyber-box lobby-box">
+				<h2 class="lobby-title">PHÒNG CHỜ THI ĐẤU</h2>
+				<p
+					style="
+						color: var(--primary);
+						font-family: &quot;Rajdhani&quot;, sans-serif;
+						font-weight: bold;
+						margin-bottom: 15px;
+					"
+				>
+					Bấm nút bên dưới để đưa toàn bộ người trong phòng vào đường đua!
+				</p>
+
+				<div class="lobby-players-title">
+					DANH SÁCH TAY ĐÔ ( <span id="lobby-count">1/10</span> )
+				</div>
+				<div id="lobby-players-grid"></div>
+
+				<button
+					id="start-game-now-btn"
+					class="cyber-btn"
+					style="
+						margin-top: 20px;
+						background: linear-gradient(45deg, #00ff66, #0088ff);
+						color: #000;
+						font-weight: 900;
+					"
+				>
+					🚀 BẮT ĐẦU TRẬN ĐẤU NGAY
+				</button>
+
+				<!-- KHUNG CHAT PHÒNG CHỜ -->
+				<div class="global-chat-box" style="margin-top: 20px">
+					<div class="chat-header-title">💬 KHUNG SỦA DƠ</div>
+					<div class="global-chat-messages"></div>
+					<div class="global-chat-input-wrapper">
+						<input
+							type="text"
+							class="global-chat-input"
+							placeholder="Nhập tin nhắn..."
+							maxlength="100"
+							autocomplete="off"
+						/>
+						<button class="global-chat-send-btn btn-small">GỬI</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- BÀN CHƠI CHÍNH -->
+		<div id="game-container" class="screen hidden">
+			<header class="cyber-box">
+				<div class="logo">⚡ CYBER TYPING</div>
+				<div id="status-box">ĐANG THI ĐẤU</div>
+				<div id="timer-box">⏱️ <span id="timer">--</span>s</div>
+			</header>
+
+			<div id="leaderboard" class="cyber-box">
+				<h2 class="race-title">ĐƯỜNG ĐUA THỜI GIAN THỰC</h2>
+				<div id="race-tracks-container"></div>
+			</div>
+
+			<div id="typing-area" class="cyber-box">
+				<div id="words-display"></div>
+				<input
+					type="text"
+					id="type-input"
+					autocomplete="off"
+					placeholder="Chờ bắt đầu..."
+					disabled
+				/>
+			</div>
+
+			<div id="chat-container" class="cyber-box hidden">
+				<input
+					type="text"
+					id="chat-input"
+					placeholder="Nhắn tin nhanh trong trận đấu (Enter)..."
+					maxlength="50"
+				/>
+			</div>
+		</div>
+
+		<div id="chat-popups"></div>
+
+		<!-- BẢNG TỔNG KẾT -->
+		<div id="summary-modal" class="modal hidden">
+			<div class="cyber-box modal-content summary-box">
+				<h2 class="glitch-title" style="font-size: 22px">🏆 BẢNG TỔNG KẾT TRẬN ĐẤU</h2>
+
+				<table id="summary-table">
+					<thead>
+						<tr>
+							<th>HẠNG</th>
+							<th>TÊN</th>
+							<th>KÝ TỰ ĐÚNG</th>
+							<th>TỐC ĐỘ</th>
+							<th>LỖI</th>
+						</tr>
+					</thead>
+					<tbody id="summary-tbody"></tbody>
+				</table>
+
+				<div style="display: flex; gap: 10px; margin-top: 20px">
+					<button
+						id="btn-play-again"
+						class="cyber-btn"
+						style="background: linear-gradient(45deg, #00f0ff, #0088ff)"
+					>
+						🔄 CHƠI TIẾP
+					</button>
+					<button
+						id="btn-home"
+						class="cyber-btn"
+						style="background: linear-gradient(45deg, #444, #222)"
+					>
+						🏠 TRANG CHỦ
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer-copyright">© 2026 Nguyễn Duy Tiến (niTe)</footer>
+
+		<canvas id="fireworks-canvas"></canvas>
+		<script src="app.js"></script>
+	</body>
+</html>

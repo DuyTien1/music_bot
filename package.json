@@ -1,31 +1,13 @@
 {
-  "name": "discord-music-bot",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js",
-    "postinstall": "python3 -m pip install -U yt-dlp || pip3 install -U yt-dlp || echo 'Bỏ qua yt-dlp trên Windows/Local'"
-  },
-  "dependencies": {
-    "@discordjs/voice": "^0.17.0",
-    "@ziplayer/infinity": "latest",
-    "@ziplayer/plugin": "latest",
-    "@ziplayer/ytexecplug": "latest",
-    "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "ffmpeg-static": "^5.2.0",
-    "https-proxy-agent": "^7.0.4",
-    "libsodium-wrappers": "^0.7.13",
-    "opusscript": "^0.0.8",
-    "play-dl": "^1.9.7",
-    "yt-dlp-exec": "latest",
-    "youtubei.js": "^10.0.0",
-    "ziplayer": "latest"
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  }
+	"name": "nite-typing-race",
+	"version": "1.2.0",
+	"description": "Realtime Vietnamese, English and ZIPcode Typing Race",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"dependencies": {
+		"express": "^4.19.2",
+		"socket.io": "^4.7.5"
+	}
 }
